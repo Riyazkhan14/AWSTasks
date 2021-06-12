@@ -1,0 +1,23 @@
+Add User :
+Set Username and then select Programmatic Access that provides us an access key and secret key.
+Attach existing policies directly and provide the Administrator Access with programatic Access.
+we have to install AWS CLI for the Windows by double-clicking. Then we have to use aws configure command. If this command is run with no arguments, then we will be prompted for configuration values such as our AWS Access Key Id and our AWS Secret Access Key and Default Region. This command helps us in login to the AWS via CLI after providing our access and secret key.
+
+$ aws configure
+$ aws ec2 create-key-pair --key-name AWSOSAL
+$ aws ec2 describe-key-pairs
+
+Create Security Group - 
+$ aws ec2 create-security-group --group-name OSAML_S_G --description "Amazon Linux Security Group"
+
+Launching the EC2 Instance
+$ aws ec2 run-instances --image-id ami-0e36788ff2473ccb --instance-type t2.micro --count 1 --subnet-id subnet-5f151037 --security-group-ids sg-0f2764f3963172aed --key-name AWSOSAL
+$ aws ec2 describe-instances
+
+Create an EBS volume of 1 GB.
+$ aws ec2 create-volume gp2 --size 1 --availability-zone ap-south-1a
+$ aws ec2 describe-volumes
+
+Attach the above created EBS volume to the instance.
+$ aws ec2 attach-volume --volume-id vol-0eb71b4965f50d7f0 --instacne-id i-09d3e4c1e5adb4f14 --device /dev/sdf
+
