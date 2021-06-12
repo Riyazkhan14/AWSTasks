@@ -21,3 +21,5 @@ $ aws ec2 describe-volumes
 Attach the above created EBS volume to the instance.
 $ aws ec2 attach-volume --volume-id vol-0eb71b4965f50d7f0 --instacne-id i-09d3e4c1e5adb4f14 --device /dev/sdf
 
+End task
+
