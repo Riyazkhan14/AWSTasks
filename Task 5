@@ -1,0 +1,55 @@
+Create High Availability Architecture with AWS CLI 
+
+The architecture includes-
+Webserver configured on EC2 Instance
+Document Root(/var/www/html) made persistent by mounting on EBS Block Device.
+Static objects used in code such as pictures stored in S3
+Setting up Content Delivery Network using CloudFront and using the origin domain as S3 bucket.
+Finally place the Cloud Front URL on the webapp code for security and low latency.- 
+
+$ aws configure -
+
+Creating key pair
+$ aws ec2 create-key-pair --key-name 'webkeytask' --output text > webkeytask.pem
+
+Creating Security group - 
+$ aws ec2 create-security-group --group-name sgwebtask --description "AWS TASK 2"
+
+Launching Instance - 
+$ aws ec2 run-instances --image-id ami-0e306788ff2473ccb --count 1 --instance-type t2.micro --key-name 'webkeytask' --security-group-id sg-0a46d057ab8a331d --subnet-id subnet-74d6ac38
+(Make sure to set key permission to execute)
+
+Creating Volume - 
+$ aws ec2 create-volume --volume-type gp2 --size 10 --availability-zone ap-south-1b
+
+Attaching EBS Volume -
+$ aws ec2 attach-volume --volume-id vol-0f4f5aad3fef61c69 --instance-id i-0c43fb3682e2a9705 --device /dev/sdf
+
+Create S3 bucket
+$ aws s3 mb s3://taskriyaz14 --region ap-south-1
+
+Uploading static data to S3
+$ aws s3 cp E:\awslogo.png s3://taskriyaz
+$ aws s3api put-object-acl --bucket taskriyaz14 --key awslogo.png --acl public-read
+
+Login through SSH
+$ ssh -i "webkeytask.pem" ec2-15-206-148-124.ap-south-1.computing.amazonaws.com
+
+Install Apache Webserver
+[root@ip-172-31-1-169 ec2-user]# yum install -y httpd
+
+Format Volume which we have created earlier and make a partition.
+[root@ip-172-31-1-169 ec2-user]# fdisk /dev/xvdf
+[root@ip-172-31-1-169 ec2-user]# mkfs.ext4 /dev/xvf1
+
+Mount the partition to /Var/www/html/
+[root@ip-172-31-1-169 ec2-user]# mount /dev/xvdf1 /var/www/html
+
+Create a file inside /var/www/html with some html static code and image.
+[root@ip-172-31-1-169 /var/www/html]# vi index.html
+
+Using Cloud front Distribution
+$ aws cloudfront create-distribution --origin-domain-name taskriyaz14.s3.ap-south-1.amazonaws.com --default-rrot-object awslogo.png
+{d3fc12d42wqkq.cloudfront.net as endpoint url of image file. use it as image url in index.html file}
+final output will be https://15.206.148.124/index.html
+ 
