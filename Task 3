@@ -1,0 +1,39 @@
+$ aws configure
+$ aws ec2 create-key-pair --key-name 'awstask5' --output text > filename.pem
+
+$ aws ec2 create-security-group --group-name SG_task5 --description AWSTASK5
+
+$ aws ec2 authorize-security-group-ingress --group-name SG_task5 --protocol tcp --port 22 --cidr 0.0.0.0/0
+$ aws ec2 authorize-security-group-ingress --group-name SG_task5 --protocol tcp --port 80 --cidr 0.0.0.0/0
+
+$ aws ec2 run-instances --image-id ami-0ad704c126371a549 --count 1 --instance-type t2.micro --key-name 'awstask5' --security-group-ids sg-0b896d9c0aeff05d7 --subnet-id subnet-0f2f399c11b6bd931
+$ aws ec2 describe-instances --filters "Name=image-id,Values=ami-0ad704c126371a549
+
+Login to EC2 instance through SSh or PuTYY
+$ sudo su
+$ yum install httpd -y
+$ yum install php -y
+$ systemctl status httpd
+$ systemctl start  httpd
+$ systemctl enable httpd
+
+$ wget https://wordpress.org/latest.zip
+$ unzip latest.zip
+$ cd wordpress
+$ cp -r * /var/www/html
+
+Using CMD CLI we will create RDS
+$ aws rds create-db-instance --db-instance-identifier wp-db --db-instance-class db.t2.micro --engine mysql --master-username admin --master-user-password secret99 --allocated-storage 20
+
+Login to Local Linux system to access MYSQL - 
+$  mysql -h wp-db.cqep3u80wt6b.ap-south-1.rds.amazonaws.com -u admin -p
+mysql> show databases;
+mysql> create database wp_db;
+
+Go to webbrowser and access the website site-
+http://65.0.124.236/wp-admin/setup-config.php
+Use database, username , password and endpoint or IP to connect and finalize setup.
+
+// to see in whole code in GUI format use below link -
+
+https://htmlpreview.github.io/?https://github.com/Riyazkhan14/AWSTasks/blob/main/index.html
